@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY RFC5280 PUBLIC "" "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5280.xml">
+<!ENTITY RFC6487 PUBLIC "" "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6487.xml">
+]>
+
+<rfc category="std" docName="draft-huston-sidr-validity-01.txt"
+     updates="6487"
+     ipr="trust200902" >
+  <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+  <?rfc toc="yes" ?>
+  <?rfc compact="yes" ?>
+  <?rfc subcompact="no" ?>
+  <?rfc symrefs="yes" ?>
+  <?rfc sortrefs="yes"?>
+  <?rfc iprnotified="no" ?>
+
+  <front>
+    <title abbrev="RPKI Validation">Update to RPKI Validation</title>
+
+    <author fullname="Geoff Huston" initials="G." surname="Huston">
+      <organization abbrev="APNIC">Asia Pacific Network Information Centre</organization>
+      <address>
+        <postal>
+          <street>6 Cordelia St</street>
+          <city>South Brisbane</city> <region>QLD</region> <code>4101</code>
+          <country>Australia</country>
+        </postal>
+        <phone>+61 7 3858 3100</phone>
+        <email>gih@apnic.net</email>
+      </address>
+    </author>
+
+    <author fullname="George Michaelson" initials="G." surname="Michaelson">
+      <organization abbrev="APNIC">Asia Pacific Network Information Centre</organization>
+      <address>
+        <postal>
+          <street>6 Cordelia St</street>
+          <city>South Brisbane</city> <region>QLD</region> <code>4101</code>
+          <country>Australia</country>
+        </postal>
+        <phone>+61 7 3858 3100</phone>
+        <email>ggm@apnic.net</email>
+      </address>
+    </author>
+
+    <date year="2015"/>
+    <abstract>
+    
+      <t>This document updates the RPKI certificate validation procedure
+      as specified in Section 7.2 of RFC6487.</t>
+
+    </abstract>
+  </front>
+
+  <middle>
+    <section title="Introduction">
+
+      <t>This document updates the RPKI certificate validation
+      procedure as specified in Section 7.2 of <xref
+      target="RFC6487"></xref>, by replacing the section 7.2 of <xref
+      target="RFC6487"></xref> with the specification contained
+      here.</t>
+
+    </section>
+    <section title="The RPKI Certification Path Validation">
+
+      <t>Validation of signed resource data using a target resource
+      certificate, and a specific set of number resources, consists of
+      verifying that the digital signature of the signed resource data
+      is valid, using the public key of the target resource
+      certificate, and also validating the resource certificate in the
+      context of the RPKI, using the path validation process.  This
+      path validation process verifies, among other things, that a
+      prospective certification path (a sequence of n certificates)
+      satisfies the following conditions:
+      <list> <t><list style="numbers">
+
+        <t>for all 'x' in {1, ..., n-1}, the Subject of certificate
+        'x' is the Issuer of certificate ('x' + 1); <vspace
+        blankLines="1"/></t>
+
+        <t>certificate '1' is issued by a trust anchor; <vspace
+        blankLines="1" /></t>
+
+        <t>certificate 'n' is the certificate to be validated; and
+        <vspace blankLines="1" /></t>
+
+        <t>for all 'x' in {1, ..., n}, certificate 'x' is valid for
+        the specific set of resources.</t>
+
+        </list></t></list></t>
+
+      <t>RPKI validation for a specific set of resources entails
+      verifying that all of the following conditions hold, in addition
+      to the Certification Path Validation criteria specified in
+      Section 6 of <xref target="RFC5280"></xref>: <vspace
+      blankLines="1" /> <list><t><list style="numbers">
+
+        <t>The certificate can be verified using the Issuer's public
+        key and the signature algorithm <vspace blankLines="1" /></t>
+
+        <t>The current time lies within the certificate's Validity
+        From and To values. <vspace blankLines="1" /></t>
+
+        <t>The certificate contains all fields that MUST be present,
+        as specified by <xref target="RFC6487" />, and contains values
+        for selected fields that are defined as allowable values by
+        this specification.<vspace blankLines="1" /></t>
+
+        <t>No field, or field value, that the <xref target="RFC6487"
+        /> specification defines as MUST NOT be present is used in the
+        certificate.<vspace blankLines="1" /></t>
+
+        <t>The Issuer has not revoked the certificate. A revoked
+        certificate is identified by the certificate's serial number
+        being listed on the Issuer's current CRL, as identified by the
+        CRLDP of the certificate, the CRL is itself valid, and the
+        public key used to verify the signature on the CRL is the same
+        public key used to verify the certificate itself.<vspace
+        blankLines="1" /></t>
+
+        <t>The resource extension data contained in this certificate
+        "encompasses" the entirety of the resources in the specific
+        resource set ("encompass" in this context is defined in
+        Section 7.1 of <xref target="RFC6487" />).<vspace
+        blankLines="1" /></t>
+
+        <t>The Certification Path originates with a certificate issued
+        by a trust anchor, and there exists a signing chain across the
+        Certification Path where the Subject of Certificate 'x' in the
+        Certification Path matches the Issuer in Certificate 'x + 1'
+        in the Certification Path, and the public key in Certificate
+        'x' can verify the signature value in Certificate 'x+1'.</t>
+        </list></t> </list></t>
+
+        <t>A certificate validation algorithm MAY perform these tests
+        in any chosen order.</t>
+
+        <t>There exists the possibility of encountering certificate
+        paths that are arbitrarily long, or attempting to generate
+        paths with loops as means of creating a potential
+        denial-of-service (DOS) attack on an Relying Party (RP).  An
+        RP executing this procedure MAY apply further heuristics to
+        guide the certification path validation process to a halt in
+        order to avoid some of the issues associated with attempts to
+        validate such malformed certification path structures.
+        Implementations of resource certificate validation MAY halt
+        with a validation failure if the certification path length
+        exceeds a locally defined configuration parameter.</t>
+
+    </section>
+    <section title="Security Considerations">
+    
+      <t>This update is intended to improve the robustness of the RPKI
+      framework by altering the procedure of the original validation
+      path that included an "encompassing" condition applied pairwise
+      to the certificates used in the validation path.</t>
+
+      <t>The intent of this update is to ensure that all certificates
+      on a validation path encompass the resources that are included
+      in the validation query, but to remove the "encompassing"
+      constraint on the resources used in pairwise comparison. This
+      change to the validation procedure reduces the criticality of
+      strict orchestration of the sequence of certificate issuance and
+      revocation when resources are added or removed from resource
+      sets, and can thereby improve the robustness of the RPKI as a
+      consequence, without altering the underlying semnatics of the
+      association of a public key value across a collection of number
+      resources.</t>
+
+    </section>
+    <section title="IANA Considerations">
+    
+      <t>No updates to the registries are suggested by this document.</t>
+      
+    </section>
+    <section title="Acknowledgements">
+
+      <t>Thanks</t>
+
+    </section>
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      &RFC5280;
+      &RFC6487;
+    </references>
+  </back>
+</rfc>

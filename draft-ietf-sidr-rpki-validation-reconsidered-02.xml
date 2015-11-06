@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY RFC3779 PUBLIC "" "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.3779.xml">
+<!ENTITY RFC5280 PUBLIC "" "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5280.xml">
+<!ENTITY RFC6482 PUBLIC "" "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6482.xml">
+<!ENTITY RFC6492 PUBLIC "" "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6492.xml">
+<!ENTITY RFC6487 PUBLIC "" "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6487.xml">
+]>
+
+<rfc category="info" docName="draft-ietf-sidr-rpki-validation-reconsidered-02.txt"
+     ipr="trust200902" >
+  <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+  <?rfc toc="yes" ?>
+  <?rfc compact="yes" ?>
+  <?rfc subcompact="no" ?>
+  <?rfc symrefs="yes" ?>
+  <?rfc sortrefs="yes"?>
+  <?rfc iprnotified="no" ?>
+
+  <front>
+    <title abbrev="RPKI Validation">RPKI Validation Reconsidered</title>
+
+    <author fullname="Geoff Huston" initials="G." surname="Huston">
+      <organization abbrev="APNIC">Asia Pacific Network Information Centre</organization>
+      <address>
+        <postal>
+          <street>6 Cordelia St</street>
+          <city>South Brisbane</city> <region>QLD</region> <code>4101</code>
+          <country>Australia</country>
+        </postal>
+        <phone>+61 7 3858 3100</phone>
+        <email>gih@apnic.net</email>
+      </address>
+    </author>
+
+    <author fullname="George Michaelson" initials="G." surname="Michaelson">
+      <organization abbrev="APNIC">Asia Pacific Network Information Centre</organization>
+      <address>
+        <postal>
+          <street>6 Cordelia St</street>
+          <city>South Brisbane</city> <region>QLD</region> <code>4101</code>
+          <country>Australia</country>
+        </postal>
+        <phone>+61 7 3858 3100</phone>
+        <email>ggm@apnic.net</email>
+      </address>
+    </author>
+
+    <author fullname="Carlos M. Martinez" initials="C.M." surname="Martinez">
+      <organization abbrev="LACNIC">Latin American and Caribbean IP Address Regional Registry</organization>
+      <address>
+        <postal>
+          <street>Rambla Mexico 6125</street>
+          <city>Montevideo</city><code>11400</code>
+          <country>Uruguay</country>
+        </postal>
+        <phone>+598 2604 2222</phone>
+        <email>carlos@lacnic.net</email>
+      </address>
+    </author>
+
+    <author fullname="Tim Bruijnzeels" initials="T" surname="Bruijnzeels">
+      <organization abbrev="RIPE NCC">RIPE Network Coordination Centre</organization>
+      <address>
+        <postal>
+          <street>Singel 258</street>
+          <city>Amsterdam</city><code>1016 AB</code>
+          <country>The Netherlands</country>
+        </postal>
+        <email>tim@ripe.net</email>
+      </address>
+    </author>
+
+    <author fullname="Andrew Lee Newton" initials="A.L." surname="Newton">
+      <organization abbrev="ARIN">American Registry for Internet Numbers</organization>
+      <address>
+        <postal>
+          <street>3635 Concorde Parkway</street>
+          <city>Chantilly</city> <region>VA</region><code>20151</code>
+          <country>USA</country>
+        </postal>
+        <email>andy@arin.net</email>
+      </address>
+    </author>
+
+    <author fullname="Alain Aina" initials="A." surname="Aina">
+      <organization abbrev="AFRINIC">African Network Information Centre (AFRINIC)</organization>
+      <address>
+        <postal>
+          <street>11th Floor, Raffles Tower</street>
+          <city>Cybercity</city> <region>Ebene</region>
+          <country>Mauritius</country>
+        </postal>
+        <phone>+230 403 51 00</phone>
+        <email>aalain@afrinic.net</email>
+      </address>
+    </author>
+    <date year="2015"/>
+    <abstract>
+    
+      <t>This document reviews the certificate validation procedure
+      specified in RFC6487 and highlights aspects of
+      operational fragility in the management of certificates in the
+      RPKI.</t>
+
+    </abstract>
+  </front>
+
+  <middle>
+    <section title="Introduction">
+
+      <t>This document reviews the certificate validation procedure
+      specified in RFC6487 and highlights aspects of
+      operational fragility in the management of certificates.</t>
+
+
+    </section>
+    <section title="Certificate Validation in the RPKI">
+
+      <t>As currently defined in section 7.2 of <xref target="RFC6487"
+      />, validation of PKIX certificates that conform to the RPKI
+      profile relies on the use of a path validation process where
+      each certificate in the validation path is required to meet the
+      certificate validation criteria. This is a recursively defined
+      validation process where, in the context of an ordered sequence
+      of certificates, as defined by each pair of certificates in this
+      sequence having a common Issuer and Subject Name respectively, a
+      certificate is defined as valid if it satisfies basic validation
+      criteria relating to the syntactic correctness, currency of
+      validity dates and similar properties of the certificate itself,
+      as described in <xref target="RFC5280" />, and also that it
+      satisfies certain additional criteria with respect to the
+      previous certificate in the sequence (the Issuer part of the
+      pair), and that this previous certificate is itself a valid
+      certificate using the same criteria. This process is applied to
+      all certificates in the sequence apart from the initial sequence
+      element, which is required to be a Trust Anchor.</t>
+
+      <t>For RPKI certificates, the additional criteria relating to
+      the previous certificate in this sequence is that the
+      certificate's number resource set, as defined in <xref
+      target="RFC3779" />, is "encompassed" by the number resource set
+      contained in the previous certificate.</t>
+
+      <t>Because <xref target="RFC6487" /> validation demands that all
+      resources in a certificate be valid under the parent (and
+      recursively, to the root), a digitally signed attestation, such
+      as a Route Origin Authorization (ROA) object <xref
+      target="RFC6482" />, which refers only to a subset of
+      RFC3779-specified resources from that certificate validation
+      chain can be concluded to be invalid, but not by virtue of the
+      relationship between the RFC3779 extensions of the certificates
+      on the putative certificate validation path and the resources in
+      the ROA, but by other resources described in these certificates
+      where the "encompassing" relationship of the resources does not
+      hold.  Any such invalidity along the certificate validation chain
+      can cause this outcome, not just at the immediate parent of the
+      end entity certificate that attests to the key used to sign the
+      ROA.</t>
+
+      <t>For example, in the certificate sequence:</t>
+<figure><artwork><![CDATA[ 
+  Certificate 1:
+    Issuer A, Subject B, Resources 192.0.2.0/24, AS64496-AS64500
+
+  Certificate 2: 
+    Issuer B, Subject C, Resources 192.0.2.0/24/24, AS64496-AS64511
+
+  Certificate 3: 
+    Issuer C, Subject D, Resources 192.0.2.0/24
+]]></artwork></figure>
+
+      <t>Certificate 3 is considered to be an invalid certificate,
+      because the resources in Certificate 2 are not encompassed by
+      the resources in Certificate 1, by virtue of certificate 2
+      describing the resources of the range AS64501 - AS64511 in this
+      RFC3779 resource extension. Obviously, these Autonomous Systems
+      numbers are not related to the IPv4 resources contained in
+      Certificate 3.</t>
+      
+      <t>Any non-encompassed resource set can cause this form or
+      validation failure, whether it is an ASN, IPv4 or IPv6 resource,
+      if it is not encompassed by the resource set in the parent
+      (Issuer) certificate.</t>
+
+      <t>The underlying observation here is that this definition of
+      certificate validation treats a collection of resources as
+      inseparable, so that a single certificate containing a bundle of
+      number resources is semantically distinct from an equivalent set
+      of certificates where each certificate contains a single number
+      resource. This semantic distinction between the whole and the
+      sum of its parts is an artifice introduced by the particular
+      choice of a certificate validation procedure used by the RPKI,
+      as distinct from meeting any particular operational requirement,
+      and the result is the introduction of operational fragility into
+      the handling of RPKI certificates, particularly in the case
+      where number resources are moved between the corresponding
+      registries, as described here.</t>
+      
+    </section>
+    <section title="Operational Considerations">
+
+      <t>There are two areas of operational concern with the current
+      RPKI validation definition.</t>
+
+      <t>The first is that of the robustness of the operational
+      management procedures in the issuance of certificates. If a
+      subordinate Certification Authority (CA) issues a certificate
+      that contains an Internet Number Resource (INR) collection that
+      is not either exactly equal to, or a strict subset of, its
+      parent CA, then this issued certificate, and all subordinate
+      certificates of this issued certificate are invalid. These
+      certificates are not only defined as invalid when being
+      considered to validate an INR that is not in the parent CA
+      certificate, but are defined as invalid for all INRs in the
+      certificate.</t>
+
+     <t>This constraint creates a degree of operational fragility in
+     the issuance of certificates, as all CA's are now required to
+     exercise extreme care in the issuance and reissuance of
+     certificates to ensure that at no time do they overclaim on the
+     resources described in the parent CA, as the consequences of an
+     operational lapse or oversight implies that all the subordinate
+     certificates from the point of INR mismatch are invalid. It would
+     be preferred if the consequences of such an operational lapse
+     were limited in scope to the specific INRs that formed the
+     mismatch, rather than including the entire set of INRs within the
+     scope of damage from this point of mismatch downward across the
+     entire sub-tree of descendant certificates in the RPKI
+     certificate hierarchy.</t>
+
+      <t>The second operational consideration described here relates
+      to the situation where a registry withdraws a resource from the
+      current holder, and the resource to transferred to another
+      registry, to be registered to a new holder in that registry. The
+      reason why this is a consideration in operational deployments of
+      the RPKI lies in the movement of the "home" registry of number
+      resources during cases of mergers, acquisitions, business
+      re-alignments, and resource transfers and the desire to ensure
+      that during this movement all other resources can continue to be
+      validated.</t>
+
+      <t>If the original registry's certification actions are simply
+      to issue a new certificate for the current holder with a reduced
+      resource set, and to revoke the original certificate, then there
+      is a distinct possibility of encountering the situation
+      illustrated by the example in the previous section. This is a
+      result of an operational process for certificate issuance by the
+      parent CA being de-coupled from the certificate operations of
+      child CA.</t>
+
+      <t>This de-coupled operation of CAs introduces a risk of
+      unintended third party damage: since a CA certificate can refer
+      to holdings which relate to two or more unrelated subordinate
+      certificates, if this CA certificate becomes invalid due to the
+      reduction in the resources allocated to this CA relating to one
+      subordinate resource set, all other subordinate certificates are
+      invalid until the CA certificate is reissued with a reduced
+      resource set.</t>
+
+      <t>In the example provided in the previous section, all
+      subordinate certificates issued by CA B are invalid, including
+      all certificates issued by CA C, until CA A issues a new
+      certificate for CA B with a reduced resource set.</t>
+
+      <t>At the lower levels of the RPKI hierarchy the resource sets
+      affected by such movements of resources may not encompass
+      significantly large pools of resources. However, as one ascends
+      through this certification hierarchy towards the apex, the
+      larger the resource set that is going to be affected by a period
+      of invalidity by virtue of such uncoordinated certificate
+      management actions. In the case of a Regional Internet Registry
+      (RIR) or National Internet Registry (NIR), the potential risk
+      arising from uncoordinated certification actions relating to a
+      transfer of resources is that the entire set of subordinate
+      certificates that refer to resources administered by the RIR or
+      the NIR cannot be validated during this period.</t>
+
+      <t>Avoiding such situations requires that CA's adhere to a very
+      specific ordering of certificate issuance. In this framework,
+      the common registry CA that describes (directly or indirectly)
+      the resources being shifted from one registry to the other, and
+      also contains in subordinate certificates (direct or indirect)
+      the certificates for both registries who are parties to the
+      resource transfer has to coordinate a specific sequence of
+      actions.</t>
+
+      <t>This common registry CA has to first issue a new certificate
+      towards the "receiving" registry that adds to the RFC3779
+      extension resource set the specific resource being transferred
+      into this receiving registry. The common registry CA then has to
+      wait until all registries in the subordinate certificate chain
+      to the receiving registry have also performed a similar issuance
+      of new certificates, and in each case a registry must await the
+      issuance of the immediate superior certificate with the
+      augmented resource set before it, in turn, can issue its own
+      augmented certificate to its subordinate CA. This is a "top
+      down" issuance sequence."</t>
+
+      <t>It is possible for the common registry to issue a certificate
+      to the "sending" registry with the reduced resource set at any
+      time, but it should not revoke the previously issued
+      certificate, nor overwrite this previously issued certificate in
+      its repository publication point without specific
+      coordination. Only when the common registry is assured that the
+      top down certificate issuance process to the receiving registry
+      CA chain has been completed can the common registry commence the
+      revocation of the original certificate for the sending registry,
+      However, it should not so until it is assured that the immediate
+      subordinate registry CA in the path to the sending registry has
+      issued a certificate with a reduced resource set, and so
+      on. This implies that on the sending side the certificate
+      issuance and revocation is a "bottom up" process.</t>
+
+      <t>If this process is not carefully followed, then the risk is
+      that some or all or the subordinate certificates of this common
+      registry CA will be unable to be validated until the entire
+      process of certificate issuance and revocation has been
+      completed. While this sequenced process is intended to preserve
+      validity of certificates in the RPKI, it is a complex, fragile
+      and operationally cumbersome process.</t>
+  
+      <t>The underlying consideration here is that the operational
+      coordination of these certificate issuance and revocation
+      actions to effect a smooth resource transfer across registries
+      is mandated by the nature of the particular choice of
+      certificate validation process described in <xref
+      target="RFC6487" />.</t>
+
+   </section>
+   <section title="Alternative Approaches">
+
+     <t>If the current definition of the RPKI certificate validation
+     procedure is considered to introduce unacceptable levels of
+     fragility and risk into the operational environment, what
+     alternatives exist?</t>
+     
+     <t>One approach is to remove the semantic requirement to consider
+     the collection of resources in the extension field of the RPKI
+     certificate as an indivisible bundle. This would allow for a
+     certificate to be considered as valid for some subset of the
+     resources listed in this extension, without necessarily being
+     considered as valid for all such described resources. The
+     implications of this approach is that any mismatch between parent
+     and subordinate over resources where the subordinate certificate
+     lists resources that are not contained in the parent certificate
+     would affect validity questions relating to only those particular
+     resources, rather than invaliding the subordinate certificate for
+     all resources, and all of its subordinate products. This would
+     appear to offer a relatively precise alignment to the defined
+     problem space, and limits the scope of consequent third party
+     damage in the event of a INR mismatch within the RPKI
+     certification hierarchy.</t>
+     
+     <t>Another approach may involve the alteration of the RPKI
+     provisioning protocol <xref target="RFC6492" /> to include a
+     specific signal from child to parent ("bottom up") relating to
+     readiness for certificate revocation.  At this stage it is
+     entirely unclear how this signalling mechanism would operate, nor
+     is it clear that it would alter the elements of operational
+     fragility nor mitigate to any meaningful extent the risks of
+     failure to ensure strict INR consistency at all times.  This is a
+     topic for further study.</t>
+     
+    </section>
+    <section title="An Amended RPKI Certification Validation Process">
+
+    <t>The following is a amended specification of certificate
+    validation as described in <xref target="RFC6487" /> that
+    describes an amended RPKI certificate validation process that was
+    informally outlined in the previous section.</t>
+
+    <t>Validation of signed resource data using a signing key that is
+    certified in a resource certificate, coupled with a specific set
+    of number resources, consists of verifying that the digital
+    signature of the signed resource data is valid, using the public
+    key that is certified by the resource certificate, and also
+    validating the resource certificate in the context of the RPKI,
+    using the path validation process.</t>
+
+    <t>This path validation process verifies, among other things, that
+    a prospective certification path (a sequence of n certificates)
+    satisfies the following conditions: <vspace blankLines="1" />
+    <list> <t><list style="numbers">
+
+      <t>for all 'x' in {1, ..., n-1}, the Subject of certificate 'x'
+      is the Issuer of certificate ('x' + 1); 
+      <vspace blankLines="1"/></t>
+
+      <t>certificate '1' is issued by a trust anchor;
+      <vspace blankLines="1" /></t>
+
+      <t>certificate 'n' is the certificate to be validated; and
+      <vspace blankLines="1" /></t>
+
+      <t>for all 'x' in {1, ..., n}, certificate 'x' is valid for the
+      specific set of resources.</t>
+
+      </list></t>
+    </list></t>
+
+    <t>RPKI validation for a specific set of resources entails
+    verifying that all of the following conditions hold, in addition
+    to the Certification Path Validation criteria specified in Section
+    6 of <xref target="RFC5280"></xref>: <vspace blankLines="1" />
+    <list><t><list style="numbers">
+
+      <t>The certificate can be verified using the Issuer's public key
+      and the signature algorithm <vspace blankLines="1" /></t>
+
+      <t>The current time lies within the certificate's Validity From
+      and To values. <vspace blankLines="1" /></t>
+
+      <t>The certificate contains all fields that MUST be present, as
+      specified by <xref target="RFC6487" />, and contains values for
+      selected fields that are defined as allowable values by this
+      specification.<vspace blankLines="1" /></t>
+
+      <t>No field, or field value, that the <xref target="RFC6487" />
+      specification defines as MUST NOT be present is used in the
+      certificate.<vspace blankLines="1" /></t>
+
+      <t>The Issuer has not revoked the certificate. A revoked
+      certificate is identified by the certificate's serial number
+      being listed on the Issuer's current CRL, as identified by the
+      CRLDP of the certificate, the CRL is itself valid, and the
+      public key used to verify the signature on the CRL is the same
+      public key used to verify the certificate itself.<vspace
+      blankLines="1" /></t>
+
+      <t>The resource extension data contained in this certificate
+      "encompasses" the entirety of the resources in the specific
+      resource set ("encompass" in this context is defined in Section
+      7.1 of <xref target="RFC6487" />).<vspace blankLines="1" /></t>
+
+      <t>The Certification Path originates with a certificate issued
+      by a trust anchor, and there exists a signing chain across the
+      Certification Path where the Subject of Certificate 'x' in the
+      Certification Path matches the Issuer in Certificate 'x + 1' in
+      the Certification Path, and the public key in Certificate 'x'
+      can verify the signature value in Certificate 'x+1'.</t>
+      </list></t> </list></t>
+
+    <t>A certificate validation algorithm MAY perform these tests in
+    any chosen order.</t>
+
+    </section>
+    <section title="Security Considerations">
+    
+      <t>The Security Considerations of <xref target="RFC6487" /> and
+      <xref target="RFC6492" /> do not address the topic described
+      here.  Obviously, within the current RPKI validation procedure,
+      any inconsistency in certificates located towards the apex of
+      the RPKI hierarchy would invalidate the entirety of the sub-tree
+      located below the point of this inconsistency. If the RPKI was
+      used to control inter-domain routing in the context of a secure
+      routing protocol, then the implications of this large scale
+      invalidation of certificates would have a corresponding massive
+      impact on the stability of routing. This appears to be a serious
+      situation.</t>
+
+    </section>
+    <section title="IANA Considerations">
+    
+      <t>No updates to the registries are suggested by this document.</t>
+      
+    </section>
+    <section title="Acknowledgements">
+
+      <t>TBA.</t>
+
+    </section>
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      &RFC3779;
+      &RFC5280;
+      &RFC6487;
+    </references>
+    <references title="Informative References">
+      &RFC6482;
+      &RFC6492;
+    </references>
+  </back>
+</rfc>
