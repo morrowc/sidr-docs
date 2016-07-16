@@ -1,0 +1,76 @@
+SIDR Operations (sidr-ops)
+-----------------------
+
+ Charter
+
+ Current Status: 
+
+ Chairs:
+    person1
+    person2
+
+ Operations and Management Area Directors:
+     Benoit Claise <bclaise@cisco.com>
+     Joel Jaeggli <joelja@bogus.com>
+
+ Operations and Management Area Advisor:
+     lucky-victim
+
+ Mailing Lists:
+     General Discussion: sidr-ops@ietf.org
+     To Subscribe:       https://www.ietf.org/mailman/listinfo/sidr-ops
+     Archive:            https://mailarchive.ietf.org/arch/browse/sidr-ops/
+
+Description of Working Group:
+
+  The global deployment of SIDR is underway, creating an Internet
+  Routing System consisting of SIDR-aware and non-SIDR-aware networks.
+  This deployment must be properly handled to avoid the division of
+  the Internet into separate networks, ensuring as secure a routing
+  system as possible.
+
+  The SIDR Operations Working Group (sidr-ops) develops guidelines for
+  the operation of SIDR-aware networks, and provides operational guidance
+  on how to deploy and operate SIDR technologies in new and existing networks.
+
+  The main focus of the SIDR Operations Working Group is to look at
+  the deployment and operational issues in the routing systems.
+
+  The goals of the sidr-ops working group are:
+
+  1.  Solicit input from network operators to identify
+  operational issues with a SIDR-aware Internet, and determine solutions
+  or workarounds to those issues.
+
+  2.  Solicit input from network operators to identify
+  operational interaction issues with the non-SIDR-aware Internet,
+  and determine solutions or workarounds to those issues.
+
+  3.  Operational solutions for identified issues should be developed
+  in sidr-ops and documented in informational or BCP drafts.
+
+  These documents should document SIDR operational experience, including
+  interactions with non-SIDR-aware networks, the interfaces between SIDR-aware
+  and non-SIDR-aware networks, and the continued operational/security impacts
+  from non-SIDR-aware networks.
+
+  SIDR operational and deployment issues with Interdomain Routing Protocols
+  are the primary responsibility of the IDR working gruop.  However, the
+  sidr-ops Working Group may provide input to that group, as needed, and
+  cooperate with that group in reviewing solutions to SIDR operational and
+  deployment problems.
+
+  Future work items within this scope will be adopted by the Working
+  Group only if there is a substantial expression of interest from
+  the community and if the work clearly does not fit elsewhere in the
+  IETF.
+
+  There must be a continuous expression of interest for the Working
+  Group to work on a particular work item.  If there is no longer
+  sufficient interest in the Working Group in a work item, the item
+  may be removed from the list of Working Group items.
+
+
+Goals and Milestones:
+  Sept 2017 - BGPSEC Ops docuemnt finalized.
+  <other>
