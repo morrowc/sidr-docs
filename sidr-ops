@@ -77,4 +77,20 @@ Description of Working Group:
 
 Goals and Milestones:
   Sept 2017 - BGPSEC Ops docuemnt finalized.
-  <other>
+    draft-ietf-sidr-bgpsec-rollover
+    draft-ietf-sidr-rtr-keying
+    draft-ietf-sidr-route-server-rpki-light
+    draft-ietf-sidr-rpki-tree-validation
+
+------------------------------ below the line ---------------
+# These stay with SIDR til done.
+
+  # draft-ietf-sidr-adverse-actions  - WGLC finished
+    draft-ietf-sidr-bgpsec-overview
+    draft-ietf-sidr-delta-protocol
+    draft-ietf-sidr-lta-use-cases
+    draft-ietf-sidr-publication
+  # draft-ietf-sidr-rpki-oob-setup  - WGLC finished
+    draft-ietf-sidr-rpki-validation-reconsidered
+    draft-ietf-sidr-slurm
+
