@@ -23,18 +23,22 @@ SIDR Operations (sidr-ops)
 
 Description of Working Group:
 
-  The global deployment of SIDR is underway, creating an Internet
+  The global deployment of RPKI, Origin Validation of BGP announcements
+  and BGPSEC, collectively called SIDR, is underway, creating an Internet
   Routing System consisting of SIDR-aware and non-SIDR-aware networks.
   This deployment must be properly handled to avoid the division of
   the Internet into separate networks, ensuring as secure a routing
-  system as possible.
+  system as possible, through encouraged deployment of the SIDR technologies.
 
   The SIDR Operations Working Group (sidr-ops) develops guidelines for
   the operation of SIDR-aware networks, and provides operational guidance
   on how to deploy and operate SIDR technologies in new and existing networks.
 
-  The main focus of the SIDR Operations Working Group is to look at
-  the deployment and operational issues in the routing systems.
+  The main focuaess of the SIDR Operations Working Group are to:
+    o discuss deployment and operational issues related to SIDR technologies
+      in networks which are part of the global routing system.
+    o gather and discuss deployment experiences with the SIDR technologies in
+      networks which are part of the global routing system.
 
   The goals of the sidr-ops working group are:
 
@@ -47,7 +51,7 @@ Description of Working Group:
   and determine solutions or workarounds to those issues.
 
   3.  Operational solutions for identified issues should be developed
-  in sidr-ops and documented in informational or BCP drafts.
+  in sidr-ops and documented in informational or BCP documents.
 
   These documents should document SIDR operational experience, including
   interactions with non-SIDR-aware networks, the interfaces between SIDR-aware
