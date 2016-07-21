@@ -1,4 +1,4 @@
-SIDR Operations (sidr-ops)
+SIDR Operations (sidrops)
 -----------------------
 
  Charter
@@ -27,30 +27,31 @@ Description of Working Group:
   and BGPSEC, collectively called SIDR, is underway, creating an Internet
   Routing System consisting of SIDR-aware and non-SIDR-aware networks.
   This deployment must be properly handled to avoid the division of
-  the Internet into separate networks, ensuring as secure a routing
+  the Internet into separate networks. sidrops works to ensure as secure a routing
   system as possible, through encouraged deployment of the SIDR technologies.
 
-  The SIDR Operations Working Group (sidr-ops) develops guidelines for
+  The SIDR Operations Working Group (sidrops) develops guidelines for
   the operation of SIDR-aware networks, and provides operational guidance
-  on how to deploy and operate SIDR technologies in new and existing networks.
+  on how to deploy and operate SIDR technologies in existing and new networks.
 
-  The main focuaess of the SIDR Operations Working Group are to:
-    o discuss deployment and operational issues related to SIDR technologies
+  The main focuess of the SIDR Operations Working Group are to:
+  
+    o Discuss deployment and operational issues related to SIDR technologies
       in networks which are part of the global routing system.
-    o gather and discuss deployment experiences with the SIDR technologies in
+    o Gather and discuss deployment experiences with the SIDR technologies in
       networks which are part of the global routing system.
 
-  The goals of the sidr-ops working group are:
+  The goals of the sidrops working group are to:
 
   1.  Solicit input from network operators to identify
   operational issues with a SIDR-aware Internet, and determine solutions
   or workarounds to those issues.
 
   2.  Solicit input from network operators to identify
-  operational interaction issues with the non-SIDR-aware Internet,
-  and determine solutions or workarounds to those issues.
+  issues with interaction  with the non-SIDR-aware Internet,
+  and to determine solutions or workarounds to those issues.
 
-  3.  Operational solutions for identified issues should be developed
+  3. Operational olutions for identified issues should be developed
   in sidr-ops and documented in informational or BCP documents.
 
   These documents should document SIDR operational experience, including
@@ -59,21 +60,20 @@ Description of Working Group:
   from non-SIDR-aware networks.
 
   SIDR operational and deployment issues with Interdomain Routing Protocols
-  are the primary responsibility of the IDR working gruop.  However, the
+  are the primary responsibility of the IDR working group.  The
   sidr-ops Working Group may provide input to that group, as needed, and
   cooperate with that group in reviewing solutions to SIDR operational and
   deployment problems.
 
   Future work items within this scope will be adopted by the Working
-  Group only if there is a substantial expression of interest from
-  the community and if the work clearly does not fit elsewhere in the
-  IETF.
+  Group if there is a substantial expression of interest from
+  the community and if the work (for example protocol maintenance 
+  clearly does not fit elsewhere in the IETF.
 
   There must be a continuous expression of interest for the Working
-  Group to work on a particular work item.  If there is no longer
+  Group to work on a particular work item. If there is no longer
   sufficient interest in the Working Group in a work item, the item
   may be removed from the list of Working Group items.
-
 
 Goals and Milestones:
   Sept 2017 - BGPSEC Ops docuemnt finalized.
@@ -81,16 +81,15 @@ Goals and Milestones:
     draft-ietf-sidr-rtr-keying
     draft-ietf-sidr-route-server-rpki-light
     draft-ietf-sidr-rpki-tree-validation
-
+    draft-ietf-sidr-lta-use-cases
+    
 ------------------------------ below the line ---------------
 # These stay with SIDR til done.
 
   # draft-ietf-sidr-adverse-actions  - WGLC finished
     draft-ietf-sidr-bgpsec-overview
     draft-ietf-sidr-delta-protocol
-    draft-ietf-sidr-lta-use-cases
     draft-ietf-sidr-publication
   # draft-ietf-sidr-rpki-oob-setup  - WGLC finished
     draft-ietf-sidr-rpki-validation-reconsidered
-    draft-ietf-sidr-slurm
 
